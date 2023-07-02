@@ -27,6 +27,21 @@ async function run() {
 
         const audioCollection = client.db("audioVibe").collection("allMusic")
 
+        // creating index for searching
+        const indexKeys = { title: 1 }
+        const indexOptions = {name: "titleSearch"}
+
+        const result = await audioCollection.createIndex(indexKeys, indexOptions)
+
+        app.get('/getMusicByTitle/:text', async (req, res) => {
+            const searchText = req.params.text
+
+            const result = await audioCollection.find({
+                title: {$regex: searchText, $options: "i"}
+            }).toArray()
+            res.send(result)
+        })
+
         app.get('/allMusicFeatured', async (req, res) => {
             const query = { status: "featured" }
 
