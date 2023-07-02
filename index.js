@@ -34,7 +34,7 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/allMusics', async (req, res) => {
+        app.get('/allMusic', async (req, res) => {
             const result = await audioCollection.find().toArray()
             res.send(result)
         })
