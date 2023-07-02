@@ -49,7 +49,12 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/allMusic', async (req, res) => {
+        app.get('/allMusicOnSearchDefault', async (req, res) => {
+            const result = await audioCollection.find().limit(9).toArray()
+            res.send(result)
+        })
+        
+        app.get('/allMusic', async(req, res) => {
             const result = await audioCollection.find().toArray()
             res.send(result)
         })
