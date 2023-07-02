@@ -34,6 +34,11 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/allMusics', async (req, res) => {
+            const result = await audioCollection.find().toArray()
+            res.send(result)
+        })
+
 
 
         // Send a ping to confirm a successful connection
