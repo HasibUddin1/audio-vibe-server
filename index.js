@@ -86,6 +86,13 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/getPlaylistByUser/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { userEmail: email }
+            const result = await playlistsCollection.find(query).toArray()
+            res.send(result)
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
