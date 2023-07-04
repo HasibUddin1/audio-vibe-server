@@ -27,6 +27,7 @@ async function run() {
 
         const audioCollection = client.db("audioVibe").collection("allMusic")
         const favoritesCollection = client.db("audioVibe").collection("favorites")
+        const playlistsCollection = client.db("audioVibe").collection("playlists")
 
         // creating index for searching
         const indexKeys = { title: 1 }
@@ -75,6 +76,13 @@ async function run() {
             const email = req.params.email
             const query = { userEmail: email }
             const result = await favoritesCollection.find(query).toArray()
+            res.send(result)
+        })
+
+        // creating playlists related apis
+        app.post('/createAPlaylist', async (req, res) => {
+            const playlist = req.body
+            const result = await playlistsCollection.insertOne(playlist)
             res.send(result)
         })
 
