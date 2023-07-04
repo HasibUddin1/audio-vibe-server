@@ -61,6 +61,20 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/getPlaylistByUser/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { userEmail: email }
+            const result = await playlistsCollection.find(query).toArray()
+            res.send(result)
+        })
+
+        app.get('/favoriteMusicByUser/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { userEmail: email }
+            const result = await favoritesCollection.find(query).toArray()
+            res.send(result)
+        })
+
         // adding music to favorite related apis
         app.post('/favoriteMusic', async (req, res) => {
             const favoriteMusic = req.body
@@ -72,24 +86,10 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/favoriteMusicByUser/:email', async (req, res) => {
-            const email = req.params.email
-            const query = { userEmail: email }
-            const result = await favoritesCollection.find(query).toArray()
-            res.send(result)
-        })
-
         // creating playlists related apis
         app.post('/createAPlaylist', async (req, res) => {
             const playlist = req.body
             const result = await playlistsCollection.insertOne(playlist)
-            res.send(result)
-        })
-
-        app.get('/getPlaylistByUser/:email', async (req, res) => {
-            const email = req.params.email
-            const query = { userEmail: email }
-            const result = await playlistsCollection.find(query).toArray()
             res.send(result)
         })
 
