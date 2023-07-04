@@ -26,10 +26,11 @@ async function run() {
         await client.connect();
 
         const audioCollection = client.db("audioVibe").collection("allMusic")
+        const favoritesCollection = client.db("audioVibe").collection("favorites")
 
         // creating index for searching
         const indexKeys = { title: 1 }
-        const indexOptions = {name: "titleSearch"}
+        const indexOptions = { name: "titleSearch" }
 
         const result = await audioCollection.createIndex(indexKeys, indexOptions)
 
@@ -37,7 +38,7 @@ async function run() {
             const searchText = req.params.text
 
             const result = await audioCollection.find({
-                title: {$regex: searchText, $options: "i"}
+                title: { $regex: searchText, $options: "i" }
             }).toArray()
             res.send(result)
         })
@@ -53,12 +54,25 @@ async function run() {
             const result = await audioCollection.find().limit(9).toArray()
             res.send(result)
         })
-        
-        app.get('/allMusic', async(req, res) => {
+
+        app.get('/allMusic', async (req, res) => {
             const result = await audioCollection.find().toArray()
             res.send(result)
         })
 
+        // adding music to favorite related apis
+        app.post('/favoriteMusic', async (req, res) => {
+            const favoriteMusic = req.body
+            const result = await favoritesCollection.insertOne(favoriteMusic)
+            res.send(result)
+        })
+
+        app.get('/favoriteMusicByUser/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { email: email }
+            const result = await favoritesCollection.find(query).toArray()
+            res.send(result)
+        })
 
 
         // Send a ping to confirm a successful connection
