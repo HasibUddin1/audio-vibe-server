@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 5000
@@ -61,6 +61,13 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/singleMusicDetails/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await audioCollection.findOne(query)
+            res.send(result)
+        })
+
         app.get('/getPlaylistByUser/:email', async (req, res) => {
             const email = req.params.email
             const query = { userEmail: email }
@@ -90,6 +97,13 @@ async function run() {
         app.post('/createAPlaylist', async (req, res) => {
             const playlist = req.body
             const result = await playlistsCollection.insertOne(playlist)
+            res.send(result)
+        })
+
+        // adding music to playlists related apis
+        app.post('/addToPlaylist', async (req, res) => {
+            const { id, music } = req.body
+            const result = await playlistsCollection.updateOne({ _id: new ObjectId(id) }, { $push: { songs: music } })
             res.send(result)
         })
 
