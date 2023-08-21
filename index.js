@@ -103,7 +103,27 @@ async function run() {
         // adding music to playlists related apis
         app.post('/addToPlaylist', async (req, res) => {
             const { id, music } = req.body
+
+            const playlist = await playlistsCollection.findOne({ _id: new ObjectId(id) })
+            if (!playlist) {
+                return res.status(404).send({ error: true, message: "Playlist not found" });
+            }
+
+            const exists = await playlist.songs.find(song => song._id === music._id)
+
+            if (exists) {
+                return res.status(400).send({ error: true, message:"This music is already added to this playlist" });
+            }
+
             const result = await playlistsCollection.updateOne({ _id: new ObjectId(id) }, { $push: { songs: music } })
+            res.send(result)
+        })
+
+        // deleting from favorites 
+        app.delete('/deleteFromFavorites/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await favoritesCollection.deleteOne(query)
             res.send(result)
         })
 
