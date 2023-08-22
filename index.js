@@ -128,8 +128,8 @@ async function run() {
                 return res.status(404).send({ error: true, message: "Playlist not found" })
             }
 
-            const existingSongIndex = playlist.songs.findIndex(song => song._id === musicId)
-            if (!existingSongIndex) {
+            const existingSongIndex = await playlist.songs.findIndex(song => song._id === musicId)
+            if (existingSongIndex === -1) {
                 return res.status(404).send({ error: true, message: "Music not found" })
             }
 
