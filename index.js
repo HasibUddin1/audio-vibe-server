@@ -112,10 +112,34 @@ async function run() {
             const exists = await playlist.songs.find(song => song._id === music._id)
 
             if (exists) {
-                return res.status(400).send({ error: true, message:"This music is already added to this playlist" });
+                return res.status(400).send({ error: true, message: "This music is already added to this playlist" });
             }
 
             const result = await playlistsCollection.updateOne({ _id: new ObjectId(id) }, { $push: { songs: music } })
+            res.send(result)
+        })
+
+        // deleting music from selected playlist
+        app.post('/deleteFromPlaylist', async (req, res) => {
+            const { id, musicId } = req.body
+
+            const playlist = await playlistsCollection.findOne({ _id: new ObjectId(id) })
+            if (!playlist) {
+                return res.status(404).send({ error: true, message: "Playlist not found" })
+            }
+
+            const existingSongIndex = playlist.songs.findIndex(song => song._id === musicId)
+            if (!existingSongIndex) {
+                return res.status(404).send({ error: true, message: "Music not found" })
+            }
+
+            playlist.songs.splice(existingSongIndex, 1)
+
+            const result = await playlistsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: { songs: playlist.songs } }
+            );
+
             res.send(result)
         })
 
