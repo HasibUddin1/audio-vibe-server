@@ -100,6 +100,14 @@ async function run() {
             res.send(result)
         })
 
+        // deleting from playlist
+        app.delete('/deletePlaylist/:id', async (req, res) => {
+            const id = req.params.id
+            const query = {_id: new ObjectId(id)}
+            const result = await playlistsCollection.deleteOne(query)
+            res.send(result)
+        })
+
         // adding music to playlists related apis
         app.post('/addToPlaylist', async (req, res) => {
             const { id, music } = req.body
