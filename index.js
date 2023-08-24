@@ -94,9 +94,10 @@ async function run() {
         })
 
         // getting single favorite music
-        app.get('/singleFavoriteMusic/:id', async (req, res) => {
+        app.get('/singleFavoriteMusic/:id/:email', async (req, res) => {
             const id = req.params.id
-            const query = { _id: new ObjectId(id) }
+            const email = req.params.email
+            const query = { musicId: id, userEmail: email }
             const result = await favoritesCollection.findOne(query)
             res.send(result)
         })
