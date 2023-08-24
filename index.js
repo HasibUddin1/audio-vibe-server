@@ -93,6 +93,14 @@ async function run() {
             res.send(result)
         })
 
+        // getting single favorite music
+        app.get('/singleFavoriteMusic/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await favoritesCollection.findOne(query)
+            res.send(result)
+        })
+
         // creating playlists related apis
         app.post('/createAPlaylist', async (req, res) => {
             const playlist = req.body
@@ -103,7 +111,7 @@ async function run() {
         // deleting from playlist
         app.delete('/deletePlaylist/:id', async (req, res) => {
             const id = req.params.id
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await playlistsCollection.deleteOne(query)
             res.send(result)
         })
