@@ -93,6 +93,36 @@ async function run() {
             res.send(result)
         })
 
+        // updating favorites count
+        app.put('/addingFavoriteCount/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const music = req.body
+            const options = { upsert: true }
+            const updatedDoc = {
+                $set: {
+                    likes: parseInt(music.likes) + 1
+                }
+            }
+
+            const result = await audioCollection.updateOne(filter, updatedDoc, options)
+            res.send(result)
+        })
+
+        app.put('/deductingFavoriteCount/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const music = req.body
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    likes: parseInt(music.likes) - 1
+                }
+            }
+            const result = await audioCollection.updateOne(filter, updateDoc, options)
+            res.send(result)
+        })
+
         // getting single favorite music
         app.get('/singleFavoriteMusic/:id/:email', async (req, res) => {
             const id = req.params.id
