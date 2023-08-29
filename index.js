@@ -28,6 +28,7 @@ async function run() {
         const audioCollection = client.db("audioVibe").collection("allMusic")
         const favoritesCollection = client.db("audioVibe").collection("favorites")
         const playlistsCollection = client.db("audioVibe").collection("playlists")
+        const usersCollection = client.db("audioVibe").collection("users")
 
         // creating index for searching
         // const indexKeys = { title: 1 }
@@ -35,6 +36,28 @@ async function run() {
 
         // const result = await audioCollection.createIndex(indexKeys, indexOptions)
 
+        // users related apis
+        app.post('/users', async (req, res) => {
+            const user = req.body
+            const query = { email: user.email }
+            const existingUser = await usersCollection.findOne(query)
+            if (existingUser) {
+                return res.send({ message: "User already exists" })
+            }
+
+            const result = await usersCollection.insertOne(user)
+            res.send(result)
+        })
+
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { email: email }
+            const user = await usersCollection.findOne(query)
+            const result = { admin: user?.role === 'admin' }
+            res.send(result)
+        })
+
+        // music related apis
         app.get('/getMusicByTitle/:text', async (req, res) => {
             const searchText = req.params.text
 
