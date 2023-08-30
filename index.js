@@ -105,6 +105,19 @@ async function run() {
             res.send(result)
         })
 
+        app.post('/addMusic', async (req, res) => {
+            const music = req.body
+            const result = await audioCollection.insertOne(music)
+            res.send(result)
+        })
+
+        app.delete('/deleteMusic/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await audioCollection.deleteOne(query)
+            res.send(result)
+        })
+
         // adding music to favorite related apis
         app.post('/favoriteMusic', async (req, res) => {
             const favoriteMusic = req.body
