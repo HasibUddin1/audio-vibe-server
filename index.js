@@ -108,7 +108,8 @@ async function run() {
         // adding music to favorite related apis
         app.post('/favoriteMusic', async (req, res) => {
             const favoriteMusic = req.body
-            const exists = await favoritesCollection.findOne(favoriteMusic)
+            const query = { musicId: favoriteMusic.musicId, userEmail: favoriteMusic.userEmail }
+            const exists = await favoritesCollection.findOne(query)
             if (exists) {
                 return res.send({ message: 'You already added this song once' })
             }
