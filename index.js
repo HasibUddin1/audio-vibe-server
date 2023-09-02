@@ -37,6 +37,12 @@ async function run() {
         // const result = await audioCollection.createIndex(indexKeys, indexOptions)
 
         // users related apis
+
+        app.get('/users', async (req, res) => {
+            const result = await usersCollection.find().toArray()
+            res.send(result)
+        })
+
         app.post('/users', async (req, res) => {
             const user = req.body
             const query = { email: user.email }
@@ -49,11 +55,31 @@ async function run() {
             res.send(result)
         })
 
+        app.patch('/makeAdmin/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    role: 'admin'
+                }
+            }
+
+            const result = await usersCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email
             const query = { email: email }
             const user = await usersCollection.findOne(query)
             const result = { admin: user?.role === 'admin' }
+            res.send(result)
+        })
+
+        app.delete('/deleteUser/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await usersCollection.deleteOne(query)
             res.send(result)
         })
 
